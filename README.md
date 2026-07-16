@@ -1,102 +1,62 @@
-# Kedi Jest Panosu — Web Sürümü
+# 🐱🖐️ Kedi Jest Panosu
 
-Masaüstü Python uygulamasının tarayıcıda çalışan hâli. Hiçbir
-kurulum gerekmez — kişi linke tıklar, "Kamerayı Başlat"a basar,
-elini gösterir.
+**Elini kameraya göster, kedi tepki versin.**
 
-Python değil, **JavaScript + MediaPipe (web sürümü)** kullanıyor,
-çünkü GitHub Pages sadece statik dosya sunar, Python çalıştıramaz.
-Tüm işlem ziyaretçinin kendi tarayıcısında oluyor — hiçbir görüntü
-hiçbir sunucuya gönderilmiyor.
+Kurulum yok, uygulama indirme yok — link'e giriyorsun, tarayıcı
+kameraya izin istiyor, elini gösteriyorsun, karşındaki kedi
+fotoğrafı anlık değişiyor. Tüm işlem kendi cihazında, tarayıcının
+içinde oluyor; hiçbir görüntü hiçbir sunucuya gönderilmiyor,
+hiçbir yerde kaydedilmiyor.
 
-## 1. Kendi fotoğraflarını koy
+Arka planda Google'ın **MediaPipe Hand Landmarker** modeli
+çalışıyor, elin 21 noktasını (parmak eklemleri) takip ediyor;
+geri kalanı basit geometri — açık/kapalı parmak, elin ekrandaki
+konumu, iki elin birbirine yakınlığı.
 
-`images/` klasöründeki 8 dosya şu an yer tutucu (benim çizdiğim
-basit kedi resimleri). Kendi 8 fotoğrafını **aynı isimlerle**
-üzerine yaz:
+### 👉 Hemen dene: **[saidbilaldariyemez.github.io/cat-meme](https://saidbilaldariyemez.github.io/cat-meme/)**
 
-```
-baskan.jpg   cool.jpg   endiseli.jpg   komiser.jpeg
-kahkaha.jpg  komik.jpg  ogrenci.jpg    sinsi.jpg
-```
+---
 
-## 2. GitHub'a yükle
+## 🖐️ El Hareketleri Rehberi
 
-Terminalde bu klasörün içine gir:
+| # | Hareket | Nasıl yapılır |
+|---|---|---|
+| 1 | **Kafa üstü** | İki elini başının çok üstünde birleştir |
+| 2 | **Üçgen** | İki elinin başparmak + işaret parmağı uçlarını birleştir |
+| 3 | **Havada** | İki elini göster (yukarıdaki ikisine uymuyorsa varsayılan) |
+| 4 | **Yumruk** | Tek elini yumruk yap |
+| 5 | **Açık el** | Tek elinin beş parmağını da aç |
+| 6 | **Tek işaret** | Sadece işaret parmağını kaldır |
+| 7 | **Shaka 🤙** | Başparmak + serçe parmağını aç, diğerleri kapalı olsun |
+| 8 | **Belirsiz** | El göstermezsen ya da yukarıdakilerin hiçbirine uymazsa |
 
-```bash
-git init
-git add .
-git commit -m "ilk yukleme"
-```
+---
 
-GitHub'da yeni bir repo oluştur (github.com → New repository,
-örneğin adı `kedi-jest-panosu` olsun, boş bırak — README/lisans
-ekleme). Sonra:
+Bu projeyi hazırlarken emeği geçen, yol gösteren **Dr. Murat
+Altun**'a 🙏 teşekkür ederim.
 
-```bash
-git branch -M main
-git remote add origin https://github.com/KULLANICI_ADIN/kedi-jest-panosu.git
-git push -u origin main
-```
+---
 
-## 3. GitHub Pages'i aç
+*Tamamen tarayıcıda çalışır (JavaScript + MediaPipe) — Python
+değil, çünkü GitHub Pages statik dosya sunar, sunucu tarafı kod
+çalıştırmaz. Masaüstü Python sürümüyle aynı 8 kuralı kullanır.*
 
-1. GitHub'da reponu aç → **Settings** → sol menüden **Pages**
-2. "Build and deployment" altında **Source: Deploy from a branch**
-3. **Branch: main**, klasör: **/ (root)** seç → **Save**
-4. Birkaç dakika bekle, sayfa yukarıda şu adreste yayınlanacak:
+`#yapayzeka #computervision #mediapipe #javascript #webdev #girisim #btkakademi`
 
-```
-https://KULLANICI_ADIN.github.io/kedi-jest-panosu/
-```
+---
 
-Bu linki istediğin kişiyle paylaşabilirsin.
-
-## Güncelleme yapmak istersen
-
-Fotoğraf değiştirmek, kural değiştirmek gibi bir düzenleme
-yaptığında:
-
-```bash
-git add .
-git commit -m "guncelleme"
-git push
-```
-
-Site birkaç dakika içinde otomatik güncellenir.
-
-## Dosyalar
+## Teknik detay (geliştiriciler için)
 
 - `index.html` — sayfa yapısı, kurallar panosu
-- `style.css` — kork tahtası / polaroid görünümü
-- `script.js` — kamera + MediaPipe + jest mantığı (Python
-  sürümüyle birebir aynı kurallar)
+- `style.css` — görünüm
+- `script.js` — kamera + MediaPipe + jest mantığı
 - `images/` — 8 kedi fotoğrafı
 
-## Jest mantığını değiştirmek
+Yerelde çalıştırmak için: `python3 -m http.server` ile klasörü
+aç, `http://localhost:8000` adresine git (kamera erişimi için
+`file://` değil, bir sunucu üzerinden açman gerekir).
 
-`script.js` içindeki `GESTURE_FILES`, `determineGesture()` ve
-kalibrasyon sabitleri (`STRAIGHT_ANGLE_THRESHOLD`,
-`TRIANGLE_DISTANCE`, `HEAD_ZONE_Y`) masaüstü Python sürümündeki
-`main.py` / `gesture_utils.py` ile birebir aynı mantığı içerir.
-Birini değiştirirsen digerini de güncellemek istersen haber ver.
-
-## Sorun giderme
-
-**Kamera açılmıyor / "izin reddedildi" yazıyor:**
-Tarayıcı adres çubuğundaki kilit simgesine tıklayıp kamera iznini
-kontrol et. HTTPS gerekiyor — GitHub Pages otomatik HTTPS sağlar,
-ama `index.html`'i doğrudan dosya olarak (file://) açarsan kamera
-çalışmayabilir; `python3 -m http.server` gibi yerel bir sunucudan
-test et.
-
-**Model yüklenmiyor / sayfa donuk kalıyor:**
-İlk açılışta ~8 MB'lık model internetten indiriliyor, yavaş
-bağlantıda birkaç saniye sürebilir. "Geliştirici bilgisi"
-bölümünü açıp konsolu (F12) kontrol et.
-
-**Jest yanlış algılanıyor:**
-Sayfanın altındaki "Geliştirici bilgisi" panelini aç, canlı
-parmak durumunu / el yüksekliğini gör, gerekirse `script.js`
-içindeki kalibrasyon sabitlerini ayarla.
+Jest kurallarını değiştirmek için `script.js` içindeki
+`GESTURE_FILES`, `determineGesture()` ve kalibrasyon sabitlerine
+(`STRAIGHT_ANGLE_THRESHOLD`, `TRIANGLE_DISTANCE`, `HEAD_ZONE_Y`)
+bak.
