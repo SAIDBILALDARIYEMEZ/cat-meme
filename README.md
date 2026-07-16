@@ -34,6 +34,7 @@ konumu, iki elin birbirine yakınlığı.
 
 Bu projeyi hazırlarken emeği geçen, yol gösteren **Dr. Murat
 Altun**'a 🙏 teşekkür ederim.
+[GitHub](https://github.com/DrMuratAltun) · [LinkedIn](https://www.linkedin.com/in/drmurataltun/)
 
 ---
 
