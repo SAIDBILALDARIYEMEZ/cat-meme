@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Kedi Jest Panosu</title>
+<meta name="description" content="Elini kameraya göster, MediaPipe tarayıcıda çalışarak jestini tanısın ve uygun kedi fotoğrafını göstersin. Hiçbir görüntü sunucuya gönderilmez." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Work+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="board">
+
+  <header class="board-header">
+    <h1 class="marker-title">
+      Kedi Jest Panosu <span class="pin-emoji" aria-hidden="true">📌</span>
+    </h1>
+    <p class="tagline">Elini kameraya göster — hangi kedi çıkacağını dedektif panosu çözsün.</p>
+  </header>
+
+  <section class="stage">
+    <div class="polaroid webcam-polaroid">
+      <div class="polaroid-frame" id="frameWrap">
+        <video id="video" autoplay playsinline muted></video>
+        <canvas id="overlay"></canvas>
+        <div class="start-overlay" id="startOverlay">
+          <button id="startBtn" class="pin-button" type="button">Kamerayı Başlat</button>
+          <p class="hint" id="startHint">Tarayıcı kamera izni isteyecek, izin ver.</p>
+        </div>
+      </div>
+      <p class="polaroid-caption">sen</p>
+    </div>
+
+    <div class="string-wrap" aria-hidden="true">
+      <svg viewBox="0 0 200 40" preserveAspectRatio="none" class="string-svg">
+        <path d="M0,20 Q100,45 200,20" stroke="#b3392c" stroke-width="2.5" fill="none" stroke-dasharray="1 0" />
+      </svg>
+      <span class="pin-dot pin-dot-left"></span>
+      <span class="pin-dot pin-dot-right"></span>
+    </div>
+
+    <div class="polaroid reaction-polaroid">
+      <div class="polaroid-frame">
+        <img id="reactionImg" src="images/sinsi.jpg" alt="algılanan jeste karşılık gelen kedi" />
+      </div>
+      <p class="polaroid-caption" id="gestureLabel">sinsi (bekleniyor)</p>
+    </div>
+  </section>
+
+  <section class="rules" aria-labelledby="rulesTitle">
+    <h2 class="marker-title small" id="rulesTitle">Kurallar Panosu</h2>
+    <p class="rules-sub">Kartlar öncelik sırasına göre — yukarıdan aşağı, ilk uyan kural kazanır. Şu an aktif olan kart yeşil çerçeve ile işaretlenir.</p>
+
+    <div class="card-grid" id="cardGrid">
+
+      <article class="card" data-gesture="above_head" style="--tilt:-2deg">
+        <img class="card-thumb" src="images/endiseli.jpg" alt="" />
+        <div class="card-body">
+          <span class="card-eyebrow">1 · İki el</span>
+          <h3>Kafa üstü</h3>
+          <p>İki el de başın çok üstünde birleşiyor.</p>
+        </div>
+      </article>
+
+      <article class="card" data-gesture="triangle" style="--tilt:3deg">
+        <img class="card-thumb" src="images/baskan.jpg" alt="" />
+        <div class="card-body">
+          <span class="card-eyebrow">2 · İki el</span>
+          <h3>Üçgen</h3>
+          <p>Başparmak ve işaret parmağı uçları iki elde de birbirine değiyor.</p>
+        </div>
+      </article>
+
+      <article class="card" data-gesture="raised" style="--tilt:-3deg">
+        <img class="card-thumb" src="images/komiser.jpeg" alt="" />
+        <div class="card-body">
+          <span class="card-eyebrow">3 · İki el</span>
+          <h3>Havada</h3>
+          <p>İki el görünüyor ama yukarıdaki iki kurala uymuyor — varsayılan iki-el hâli.</p>
+        </div>
+      </article>
+
+      <article class="card" data-gesture="fist" style="--tilt:2deg">
+        <img class="card-thumb" src="images/kahkaha.jpg" alt="" />
+        <div class="card-body">
+          <span class="card-eyebrow">4 · Tek el</span>
+          <h3>Yumruk</h3>
+          <p>Başparmak hariç dört parmak kapalı — başparmağın yönü önemsiz.</p>
+        </div>
+      </article>
+
+      <article class="card" data-gesture="open_palm" style="--tilt:-1.5deg">
+        <img class="card-thumb" src="images/komik.jpg" alt="" />
+        <div class="card-body">
+          <span class="card-eyebrow">5 · Tek el</span>
+          <h3>Açık el</h3>
+          <p>Beş parmak da açık.</p>
+        </div>
+      </article>
+
+      <article class="card" data-gesture="point" style="--tilt:2.5deg">
+        <img class="card-thumb" src="images/ogrenci.jpg" alt="" />
+        <div class="card-body">
+          <span class="card-eyebrow">6 · Tek el</span>
+          <h3>Tek işaret</h3>
+          <p>Sadece işaret parmağı açık — başparmak önemsiz.</p>
+        </div>
+      </article>
+
+      <article class="card" data-gesture="shaka" style="--tilt:-2.5deg">
+        <img class="card-thumb" src="images/cool.jpg" alt="" />
+        <div class="card-body">
+          <span class="card-eyebrow">7 · Tek el</span>
+          <h3>Shaka</h3>
+          <p>Başparmak + serçe parmağı açık — diğerleri önemsiz.</p>
+        </div>
+      </article>
+
+      <article class="card" data-gesture="unknown" style="--tilt:1.5deg">
+        <img class="card-thumb" src="images/sinsi.jpg" alt="" />
+        <div class="card-body">
+          <span class="card-eyebrow">8 · Varsayılan</span>
+          <h3>Belirsiz</h3>
+          <p>El yok, ya da yukarıdakilerin hiçbirine uymuyor.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <details class="dev-panel">
+    <summary>Geliştirici bilgisi</summary>
+    <pre id="devInfo">Kamera başlatılmadı.</pre>
+  </details>
+
+  <footer class="board-footer">
+    <p>
+      Tamamen tarayıcıda çalışır — MediaPipe Hand Landmarker (Google) ile.
+      Hiçbir görüntü kaydedilmez ya da sunucuya gönderilmez.
+    </p>
+  </footer>
+
+</div>
+
+<script type="module" src="script.js"></script>
+</body>
+</html>
