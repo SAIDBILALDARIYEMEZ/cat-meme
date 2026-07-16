@@ -1,4 +1,4 @@
-# 🐱🖐️ Kedi Jest Panosu
+# 🐱🖐️ Kedi Meme Panosu
 
 **Elini kameraya göster, kedi tepki versin.**
 
